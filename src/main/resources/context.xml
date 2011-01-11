@@ -1,0 +1,76 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/lang 
+http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+http://camel.apache.org/schema/spring 
+http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+    <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/context.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <camel:camelContext id="camelContext">
+        <camel:routeBuilder ref="routeBuilder"/>        
+    </camel:camelContext>
+
+    <bean id="routeBuilder" depends-on="routeModelExtender"
+        class="org.openehealth.ipf.pix.SampleRouteBuilder">
+    </bean>
+
+
+    <bean id="coreModelExtension" 
+        class="org.openehealth.ipf.platform.camel.core.extend.CoreModelExtension">
+    </bean>
+
+    <bean id="hl7ModelExtension"
+        class="org.openehealth.ipf.platform.camel.hl7.extend.Hl7ModelExtension" >
+    </bean>
+
+    <bean id="mllpModelExtension"
+        class="org.openehealth.ipf.platform.camel.ihe.mllp.core.extend.MllpModelExtension">
+    </bean>
+
+    <bean id="routeModelExtender" 
+        class="org.openehealth.ipf.platform.camel.core.extend.DefaultModelExtender">
+        <property name="routeModelExtensions">
+            <list>
+                <ref bean="coreModelExtension" />
+                <ref bean="hl7ModelExtension" />
+                <ref bean="mllpModelExtension" />
+                <ref bean="pixConfiguration" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="qbpq21Response"
+          class="org.openehealth.ipf.pix.QbpQ21Processor">
+    </bean>
+
+    <bean id="hl7codec" class="org.apache.camel.component.hl7.HL7MLLPCodec">
+        <property name="charset" value="iso-8859-1"/>
+    </bean>
+
+    <bean id="alternativeCodec" class="org.apache.camel.component.hl7.HL7MLLPCodec">
+        <property name="charset" value="utf-8"/>
+    </bean>
+
+     <bean name="pixConfiguration" class="org.openehealth.ipf.pix.PIXConfiguration">
+        <property name="enablePix" value="${enablePIX}"/>
+        <property name="pixManagerInfo" value="${PIXManagerInfo}"/>
+        <property name="globalNameSpaceId" value="${GlobalNameSpaceId}"/>
+        <property name="globalUniversialId" value="${GlobalUniversialId}"/>
+        <property name="globalUniversalIdType" value="${GlobalUniversalIdType}"/>
+        <property name="globalIdentifierTypeCode" value="${GlobalIdentifierTypeCode}"/>
+     </bean>
+
+</beans>
