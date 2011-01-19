@@ -23,10 +23,18 @@ http://camel.apache.org/schema/spring/camel-spring.xsd">
         <camel:routeBuilder ref="routeBuilder"/>        
     </camel:camelContext>
 
+    <bean id="prefixLookup" class="org.openehealth.ipf.pix.PrefixLookup">
+       <property name="prefixMap">
+           <map>
+               <entry key ="1.2.3.4.5" value="myPrefix"/>
+           </map>
+
+       </property>
+    </bean>
+
     <bean id="routeBuilder" depends-on="routeModelExtender"
         class="org.openehealth.ipf.pix.SampleRouteBuilder">
     </bean>
-
 
     <bean id="coreModelExtension" 
         class="org.openehealth.ipf.platform.camel.core.extend.CoreModelExtension">
@@ -48,6 +56,7 @@ http://camel.apache.org/schema/spring/camel-spring.xsd">
                 <ref bean="hl7ModelExtension" />
                 <ref bean="mllpModelExtension" />
                 <ref bean="pixConfiguration" />
+                <ref bean="prefixLookup"/>
             </list>
         </property>
     </bean>

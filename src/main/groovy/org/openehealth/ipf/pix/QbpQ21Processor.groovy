@@ -8,6 +8,7 @@ import static org.openehealth.ipf.platform.camel.core.util.Exchanges.resultMessa
 import org.openehealth.ipf.commons.ihe.pixpdq.definitions.v25.pdq.message.RSP_K21
 import java.text.SimpleDateFormat
 import java.text.DateFormat
+import org.openehealth.ipf.pix.PrefixLookup
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,8 +18,11 @@ import java.text.DateFormat
  * To change this template use File | Settings | File Templates.
  */
 class QbpQ21Processor implements  Processor {
-  @Override
 
+
+
+
+  @Override
   void process(Exchange exchange)  {
     def msg = exchange.in.body
     RSP_K21 rspMsg = new RSP_K21()
@@ -37,20 +41,28 @@ class QbpQ21Processor implements  Processor {
     Date date = new Date()
     DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssS")
     def msh10 = formatter.format(date)
-    println "neue nessage number " + msh10
+    println "new nessage number " + msh10
     qbpAdapter.MSH[10] = msh10
     qbpAdapter.MSA[1] = 'AA'
     qbpAdapter.MSA[2] = msg.MSH[10]
     qbpAdapter.QAK[1] = msg.QPD[2]
     qbpAdapter.QAK[2] = 'OK'
     qbpAdapter.QPD = msg.QPD
-    qbpAdapter.QUERY_RESPONSE.PID[3] = msg.QPD[3][4][1].value + "_" + msg.QPD[3][1].value
-    qbpAdapter.QUERY_RESPONSE.PID[3][4][1] = PIXConfiguration.globalNameSpaceId //'global'
-    qbpAdapter.QUERY_RESPONSE.PID[3][4][2] = PIXConfiguration.globalUniversialId
-    qbpAdapter.QUERY_RESPONSE.PID[3][4][3] = PIXConfiguration.globalUniversalIdType
-    qbpAdapter.QUERY_RESPONSE.PID[3][5] = PIXConfiguration.globalIdentifierTypeCode
-    qbpAdapter.QUERY_RESPONSE.PID[5](0)[7] = ''
-    qbpAdapter.QUERY_RESPONSE.PID[5](1)[7] = 'S'
+    println "QPD[3][4][2]" +  msg.QPD[3][4][2].value
+    def prefixMap = PrefixLookup.prefixMap
+    def prefix =  prefixMap.get(msg.QPD[3][4][2].value)
+    if (prefix != null) {
+      qbpAdapter.QUERY_RESPONSE.PID[3] = prefix + "_" + msg.QPD[3][1].value
+      //qbpAdapter.QUERY_RESPONSE.PID[3] = msg.QPD[3][4][1].value + "_" + msg.QPD[3][1].value
+      qbpAdapter.QUERY_RESPONSE.PID[3][4][1] = PIXConfiguration.globalNameSpaceId //'global'
+      qbpAdapter.QUERY_RESPONSE.PID[3][4][2] = PIXConfiguration.globalUniversialId
+      qbpAdapter.QUERY_RESPONSE.PID[3][4][3] = PIXConfiguration.globalUniversalIdType
+      qbpAdapter.QUERY_RESPONSE.PID[3][5] = PIXConfiguration.globalIdentifierTypeCode
+      qbpAdapter.QUERY_RESPONSE.PID[5](0)[7] = ''
+      qbpAdapter.QUERY_RESPONSE.PID[5](1)[7] = 'S'
+    } else {
+       qbpAdapter.QAK[2] = 'NF'
+    }
 
 
     exchange.out.body = qbpAdapter
