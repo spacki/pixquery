@@ -55,38 +55,7 @@ class SampleRouteTest {
 
       def message = inputMessage("message/QBP_Q23.hl7")
       println ("MSH9:------------------------------ " + message.MSH[9][2].value)
-      //String message = inputMessage("QBP_Q23.hl7").toString();
-      //println "---------------------------->"  + message
-      /*
-      QBP_Q21 qbpMsg = new QBP_Q21()
-      MessageAdapter qbpAdapter = new MessageAdapter(new PipeParser(), qbpMsg)
-      println "Message: " + qbpMsg
 
-      qbpAdapter.MSH[1] = '|'
-      qbpAdapter.MSH[2] = PIXConfiguration.encodingChars
-      qbpAdapter.MSH[3] = PIXConfiguration.sendingApplication
-      qbpAdapter.MSH[4] = PIXConfiguration.sendingFacility
-      qbpAdapter.MSH[5] = PIXConfiguration.receivingApplication
-      qbpAdapter.MSH[6] = PIXConfiguration.receivingFacility
-	  qbpAdapter.MSH[9][1] = 'QBP'
-	  qbpAdapter.MSH[9][2] = 'Q23'
-	  qbpAdapter.MSH[12] = PIXConfiguration.hl7Version
-	  qbpAdapter.QPD[1][1] = PIXConfiguration.pixQueryId_1
-	  qbpAdapter.QPD[1][2] = PIXConfiguration.pixQueryId_2
-	  qbpAdapter.QPD[1][3] = PIXConfiguration.pixQueryId_3
-	  qbpAdapter.QPD[3][2] = ''
-	  qbpAdapter.QPD[3][3] = ''
-	  qbpAdapter.QPD[3][4][1] = PIXConfiguration.localNamespace
-	  qbpAdapter.QPD[3][4][2] = PIXConfiguration.localAssigningAuthority
-	  qbpAdapter.QPD[3][4][3] = PIXConfiguration.localUUtype
-	  qbpAdapter.QPD[4][1] = ''
-	  qbpAdapter.QPD[4][2] = ''
-	  qbpAdapter.QPD[4][3] = ''
-	  qbpAdapter.QPD[4][4] = PIXConfiguration.globalAssigningAuthority
-	  qbpAdapter.RCP[1] = 'I'
-      println "New Messageadapter: " + qbpAdapter.QPD[1][1];
-      println "New Message: " + qbpAdapter.RCP[1];
-      */
     }
 
 

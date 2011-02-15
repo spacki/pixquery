@@ -49,6 +49,7 @@ class QbpQ21Processor implements  Processor {
     qbpAdapter.QAK[2] = 'OK'
     qbpAdapter.QPD = msg.QPD
     println "QPD[3][4][2]" +  msg.QPD[3][4][2].value
+    //def prefixMap = PrefixLookup.prefixMap
     def prefixMap = PrefixLookup.prefixMap
     def prefix =  prefixMap.get(msg.QPD[3][4][2].value)
     if (prefix != null) {
