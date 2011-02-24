@@ -40,7 +40,7 @@ public class HospitalDaoImpl extends SimpleJdbcDaoSupport implements HospitalDao
         public Hospital mapRow(ResultSet rs, int rowNum) throws SQLException {
             Hospital hospital = new Hospital();
             hospital.setDomainId(rs.getString("HOSPITAL_DOMAIN_ID"));
-            hospital.setDomainName("HOSPITAL_DOMAIN_NAME");
+            hospital.setDomainName(rs.getString("HOSPITAL_DOMAIN_NAME"));
             hospital.setPrefix(rs.getString("HOSPITAL_PID_PREFIX"));
             return hospital;
         }

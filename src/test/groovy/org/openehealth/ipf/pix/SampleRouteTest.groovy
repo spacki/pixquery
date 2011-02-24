@@ -25,7 +25,7 @@ import org.junit.Ignore
  */
 
 @RunWith(SpringJUnit4ClassRunner)
-@ContextConfiguration(locations = ['/context.xml'])
+@ContextConfiguration(locations = ['/conf/context.xml'])
 class SampleRouteTest {
 
 

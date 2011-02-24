@@ -23,6 +23,7 @@ class SampleRouteBuilder extends SpringRouteBuilder {
         // -------------------------------------------------------------
         //from('pix-iti9://0.0.0.0:8444?audit=false')
         from("pix-iti9://${PIXConfiguration.pixManagerInfo}")
+           .output('Received message', null)
            .onException(ValidationException.class).to('direct:error').end()
            .validate().iti9Request()
            //.inOnly().to('direct:input2')
@@ -39,7 +40,9 @@ class SampleRouteBuilder extends SpringRouteBuilder {
                //resultMessage(it).body = MessageUtils.ack(it.in.body.target)
                //resultMessage(it).body = rsp
            }*/
-           .processRef('qbpq21Response')
+           //.processRef('qbpq21Response')
+            .beanRef("qbpq21Response")
+            .output("PixQueryResponse", null)
 
          from('direct:error')
             .convertBodyTo(String.class)

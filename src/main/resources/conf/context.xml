@@ -14,7 +14,7 @@ http://camel.apache.org/schema/spring/camel-spring.xsd">
     <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath:/context.properties</value>
+                <value>classpath:/pix.properties</value>
             </list>
         </property>
     </bean>
@@ -22,6 +22,18 @@ http://camel.apache.org/schema/spring/camel-spring.xsd">
     <camel:camelContext id="camelContext">
         <camel:routeBuilder ref="routeBuilder"/>        
     </camel:camelContext>
+
+    <bean id="hospitalService"
+            class="org.openehealth.ipf.pix.HospitalServiceImpl">
+        <property name="hospitalDao" ref="hospitalDao"/>
+    </bean>
+
+
+    <!--bean id="hospital"  class="org.openehealth.ipf.pix.Hospital">
+        <property name="domainName" value="SV_DOMAIN"/>
+        <property name="domainId" value="1.2.840.113619.20.2.2.50.1"/>
+        <property name="prefix" value="SV"/>
+    </bean-->
 
     <bean id="prefixLookup" class="org.openehealth.ipf.pix.PrefixLookup">
        <property name="prefixMap">
@@ -34,6 +46,10 @@ http://camel.apache.org/schema/spring/camel-spring.xsd">
 
     <bean id="routeBuilder" depends-on="routeModelExtender"
         class="org.openehealth.ipf.pix.SampleRouteBuilder">
+    </bean>
+
+    <bean id="sampleModelExtension"
+        class="org.openehealth.ipf.pix.SampleModelExtension">
     </bean>
 
     <bean id="coreModelExtension" 
@@ -53,15 +69,16 @@ http://camel.apache.org/schema/spring/camel-spring.xsd">
         <property name="routeModelExtensions">
             <list>
                 <ref bean="coreModelExtension" />
+                <ref bean="sampleModelExtension"/>
                 <ref bean="hl7ModelExtension" />
                 <ref bean="mllpModelExtension" />
                 <ref bean="pixConfiguration" />
-                <ref bean="prefixLookup"/>
+                <!--ref bean="prefixLookup"/-->
             </list>
         </property>
     </bean>
 
-    <bean id="qbpq21Response"
+    <bean id="qbpq21Response"        depends-on="hospitalService"
           class="org.openehealth.ipf.pix.QbpQ21Processor">
     </bean>
 
@@ -81,5 +98,18 @@ http://camel.apache.org/schema/spring/camel-spring.xsd">
         <property name="globalUniversalIdType" value="${GlobalUniversalIdType}"/>
         <property name="globalIdentifierTypeCode" value="${GlobalIdentifierTypeCode}"/>
      </bean>
+
+
+     <bean id="hospitalDao" class="org.openehealth.ipf.pix.HospitalDaoImpl">
+        <property name="dataSource" ref="dataSource"/>
+     </bean>
+
+     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+     </bean>
+
 
 </beans>
